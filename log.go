@@ -1,4 +1,4 @@
-package dbdao
+package torm
 
 import (
 	"fmt"
@@ -16,17 +16,17 @@ type dbLog struct{}
 
 //Debug function can print debug log with a line feed.
 func (d *dbLog) Debug(v ...interface{}) {
-	logger.D("[dbdao]", fmt.Sprint(v...))
+	logger.D("[torm]", fmt.Sprint(v...))
 }
 
 //Debugf function can print formatted debug log.
 func (d *dbLog) Debugf(format string, v ...interface{}) {
-	logger.D("[dbdao]", format, v...)
+	logger.D("[torm]", format, v...)
 }
 
 //Info function can print Info log with a line feed.
 func (d *dbLog) Info(v ...interface{}) {
-	logger.I("[dbdao]", fmt.Sprint(v...))
+	logger.I("[torm]", fmt.Sprint(v...))
 }
 
 //Infof function can print formatted info log.
@@ -37,27 +37,27 @@ func (d *dbLog) Infof(format string, v ...interface{}) {
 			return
 		}
 	}
-	logger.I("[dbdao]", format, v...)
+	logger.I("[torm]", format, v...)
 }
 
 //Warn function can print Warn log with a line feed.
 func (d *dbLog) Warn(v ...interface{}) {
-	logger.W("[dbdao]", fmt.Sprint(v...))
+	logger.W("[torm]", fmt.Sprint(v...))
 }
 
 //Warnf function can print formatted Warn log.
 func (d *dbLog) Warnf(format string, v ...interface{}) {
-	logger.W("[dbdao]", format, v...)
+	logger.W("[torm]", format, v...)
 }
 
 //Error function can print Error log with a line feed.
 func (d *dbLog) Error(v ...interface{}) {
-	logger.E("[dbdao]", fmt.Sprint(v...))
+	logger.E("[torm]", fmt.Sprint(v...))
 }
 
 //Errorf function can print formatted Error log.
 func (d *dbLog) Errorf(format string, v ...interface{}) {
-	logger.E("[dbdao]", format, v...)
+	logger.E("[torm]", format, v...)
 }
 
 func (d *dbLog) Level() core.LogLevel {

@@ -7,7 +7,7 @@
 *   Description：
 *
 ================================================================*/
-package dbdao
+package torm
 
 import "database/sql"
 

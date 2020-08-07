@@ -1,4 +1,4 @@
-package dbdao
+package torm
 
 type DbBaseDao struct {
 	Engine  *Engine
