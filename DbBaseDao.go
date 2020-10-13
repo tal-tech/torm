@@ -74,7 +74,7 @@ func CastToParamInDesc(input interface{}) ParamInDesc {
 //Mysql instance set session.
 func (this *DbBaseDao) InitSession() {
 	if this.Session == nil {
-		this.Session = this.Engine.Where("")
+		this.Session = this.Engine.NewSession()
 	}
 }
 
