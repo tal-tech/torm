@@ -253,7 +253,7 @@ func (session *Session) Decr(column string, arg ...interface{}) *Session {
 }
 
 // SetExpr provides a query string like "column = {expression}"
-func (session *Session) SetExpr(column string, expression interface{}) *Session {
+func (session *Session) SetExpr(column string, expression string) *Session {
 	session.Session = session.Session.SetExpr(column, expression)
 	return session
 }
