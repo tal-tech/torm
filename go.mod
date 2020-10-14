@@ -6,6 +6,7 @@ require (
 	github.com/Unknwon/goconfig v0.0.0-20191126170842-860a72fb44fd // indirect
 	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/go-xorm/core v0.6.2
 	github.com/go-xorm/xorm v0.7.9
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
 	github.com/json-iterator/go v1.1.10 // indirect

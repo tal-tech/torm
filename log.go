@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/tal-tech/loggerX"
-	"xorm.io/core"
+	"github.com/go-xorm/core"
 )
 
 //Introduce logger plugin.
