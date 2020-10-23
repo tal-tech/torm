@@ -9,38 +9,16 @@
 ================================================================*/
 package torm
 
-import "database/sql"
-
 var (
-	HookExec   func(func() (sql.Result, error)) (sql.Result, error)
-	HookGet    func(func() (bool, error)) (bool, error)
-	HookFind   func(func() error) error
-	HookInsert func(func() (int64, error)) (int64, error)
-	HookDelete func(func() (int64, error)) (int64, error)
-	HookQuery  func(func() ([]map[string][]byte, error)) ([]map[string][]byte, error)
-	HookUpdate func(func() (int64, error)) (int64, error)
+	TormBefore func() error
+	TormAfter  func() error
 )
 
 func init() {
-	HookExec = func(fn func() (sql.Result, error)) (sql.Result, error) {
-		return fn()
+	TormBefore = func() error {
+		return nil
 	}
-	HookGet = func(fn func() (bool, error)) (bool, error) {
-		return fn()
-	}
-	HookFind = func(fn func() error) error {
-		return fn()
-	}
-	HookInsert = func(fn func() (int64, error)) (int64, error) {
-		return fn()
-	}
-	HookDelete = func(fn func() (int64, error)) (int64, error) {
-		return fn()
-	}
-	HookQuery = func(fn func() ([]map[string][]byte, error)) ([]map[string][]byte, error) {
-		return fn()
-	}
-	HookUpdate = func(fn func() (int64, error)) (int64, error) {
-		return fn()
+	TormAfter = func() error {
+		return nil
 	}
 }

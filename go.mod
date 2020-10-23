@@ -5,8 +5,6 @@ go 1.12
 require (
 	github.com/Unknwon/goconfig v0.0.0-20191126170842-860a72fb44fd // indirect
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/go-xorm/core v0.6.2
-	github.com/go-xorm/xorm v0.7.3
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0 // indirect
@@ -16,4 +14,6 @@ require (
 	github.com/tal-tech/loggerX v0.0.0-20200806121626-bc3db51db258
 	github.com/tal-tech/xtools v0.0.0-20200806122720-d016f6d90e97
 	go.uber.org/zap v1.15.0 // indirect
+	xorm.io/core v0.7.3
+	xorm.io/xorm v1.0.5
 )

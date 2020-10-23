@@ -1,5 +1,7 @@
 package torm
 
+import "context"
+
 type DbBaseDao struct {
 	Engine  *Engine
 	Session *Session
@@ -72,16 +74,16 @@ func CastToParamInDesc(input interface{}) ParamInDesc {
 }
 
 //Mysql instance set session.
-func (this *DbBaseDao) InitSession() {
+func (this *DbBaseDao) InitSession(ctx context.Context) {
 	if this.Session == nil {
-		this.Session = this.Engine.NewSession()
+		this.Session = this.Engine.Context(ctx)
 	}
 }
 
 //SetTable can specify a table name.
-func (this *DbBaseDao) SetTable(tableName string) {
+func (this *DbBaseDao) SetTable(ctx context.Context, tableName string) {
 	if this.Session == nil {
-		this.InitSession()
+		this.InitSession(ctx)
 	}
 
 	this.Session.Table(tableName)

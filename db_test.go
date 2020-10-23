@@ -11,6 +11,7 @@
 package torm
 
 import (
+	"context"
 	"testing"
 	"time"
 )
@@ -45,7 +46,7 @@ func NewGolangStatsDao(v ...interface{}) *GolangStatsDao {
 
 func (this *GolangStatsDao) Get(mId Param) (ret []GolangStats, err error) {
 	ret = make([]GolangStats, 0)
-	this.InitSession()
+	this.InitSession(context.Background())
 
 	this.BuildQuery(mId, "id")
 
@@ -54,7 +55,7 @@ func (this *GolangStatsDao) Get(mId Param) (ret []GolangStats, err error) {
 }
 func (this *GolangStatsDao) GetLimit(mId Param, pn, rn int) (ret []GolangStats, err error) {
 	ret = make([]GolangStats, 0)
-	this.InitSession()
+	this.InitSession(context.Background())
 
 	this.BuildQuery(mId, "id")
 
@@ -83,7 +84,7 @@ func TestSession(t *testing.T) {
 
 	//select
 	gss := make([]GolangStats, 0, 5)
-	err = session.Sql("select * from  golang_stats").Limit(5).Desc("create_time").Find(&gss)
+	err = session.SQL("select * from  golang_stats").Limit(5).Desc("create_time").Find(&gss)
 	if err != nil {
 		t.Fatal("select failed,", err)
 	}
@@ -128,7 +129,7 @@ func TestEngine(t *testing.T) {
 
 	//select
 	gss := make([]GolangStats, 0, 5)
-	err = engine.Sql("select * from  golang_stats").Limit(5).Desc("create_time").Find(&gss)
+	err = engine.SQL("select * from  golang_stats").Limit(5).Desc("create_time").Find(&gss)
 	if err != nil {
 		t.Fatal("select failed,", err)
 	}
@@ -138,7 +139,7 @@ func TestEngine(t *testing.T) {
 	gs.Id = 64
 	gs.Value = 64
 	gs.Tags = "dbdao-update-64"
-	cnt, err = engine.Id(64).Update(gs)
+	cnt, err = engine.ID(64).Update(gs)
 	if err != nil {
 		t.Fatal("update failed,", err)
 	}

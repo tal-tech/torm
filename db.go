@@ -4,13 +4,15 @@ import (
 	"context"
 	"log"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"time"
-	"github.com/tal-tech/xtools/confutil"
-	"github.com/spf13/cast"
+
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/xorm"
-	"sync"
+	"github.com/spf13/cast"
+	"github.com/tal-tech/xtools/confutil"
+	"xorm.io/xorm"
+	xlog "xorm.io/xorm/log"
 )
 
 type DBDao struct {
@@ -23,9 +25,10 @@ var (
 	curDbPoses   map[string]*uint64  //Currently selected database
 	showSql      bool                //show sql switch
 	showExecTime bool                //show sql executed time switch.
+	logLevel     = xlog.LOG_INFO
 	slowDuration time.Duration       //Slow query time config
-	maxConn      int = 100           //Maximum number of connections
-	maxIdle      int = 30            //Maximum number of idle connections
+	maxConn      int           = 100 //Maximum number of connections
+	maxIdle      int           = 30  //Maximum number of idle connections
 	lock         sync.RWMutex
 )
 
@@ -47,9 +50,11 @@ func newDBDaoWithParams(host string, driver string) (Db *DBDao) {
 	//最大超时时间
 	Db.Engine.SetConnMaxLifetime(time.Second * 3000)
 	Db.Engine.ShowSQL(showSql)
-	Db.Engine.ShowExecTime(showExecTime)
 	//set logger Plug-in
-	Db.Engine.SetLogger(dbLogger)
+	logger := TormLogger{}
+	logger.SetLevel(logLevel)
+	logger.ShowSQL(true)
+	Db.Engine.SetLogger(NewTormLoggerAdapter(logger))
 	return
 }
 
@@ -65,6 +70,9 @@ func init() {
 	idc := ""
 	showLog := confutil.GetConfStringMap("MysqlConfig")
 	showSql = showLog["showSql"] == "true"
+	if showLog["level"] != "" {
+		logLevel = xlog.LogLevel(cast.ToInt(showLog["level"]))
+	}
 	showExecTime = showLog["showExecTime"] == "true"
 	slowDuration = time.Duration(cast.ToInt(showLog["slowDuration"])) * time.Millisecond
 	maxConnConfig := cast.ToInt(showLog["maxConn"])

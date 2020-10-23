@@ -3,7 +3,7 @@ package torm
 import (
 	"context"
 
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 )
 
 type Engine struct {
@@ -95,13 +95,6 @@ func (engine *Engine) Cascade(trueOrFalse ...bool) *Session {
 func (engine *Engine) Where(query interface{}, args ...interface{}) *Session {
 	session := engine.NewSession()
 	session.Session = session.Session.Where(query, args...)
-	return session
-}
-
-// Id will be deprecated, please use ID instead
-func (engine *Engine) Id(id interface{}) *Session {
-	session := engine.NewSession()
-	session.Session = session.Session.Id(id)
 	return session
 }
 

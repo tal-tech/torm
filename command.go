@@ -14,29 +14,30 @@ func (this *DbBaseDao) Create(bean interface{}) (int64, error) {
 // Update records, bean's non-empty fields are updated contents, Update with ID primary key.
 func (this *DbBaseDao) Update(bean interface{}) (int64, error) {
 	if this.Session == nil {
-		return this.Engine.Id(this.Engine.IdOf(bean)).AllCols().Update(bean)
+		return this.Engine.ID(bean).AllCols().Update(bean)
 	} else {
-		return this.Session.Id(this.Engine.IdOf(bean)).AllCols().Update(bean)
+		return this.Engine.ID(bean).AllCols().Update(bean)
 	}
 }
 
 //Update special specified fields, Update with ID primary key.
 func (this *DbBaseDao) UpdateCols(bean interface{}, cols ...string) (int64, error) {
 	if this.Session == nil {
-		return this.Engine.Id(this.Engine.IdOf(bean)).Cols(cols...).Update(bean)
+		return this.Engine.ID(bean).Cols(cols...).Update(bean)
 	} else {
-		return this.Session.Id(this.Engine.IdOf(bean)).Cols(cols...).Update(bean)
+		return this.Engine.ID(bean).Cols(cols...).Update(bean)
 	}
 }
 
 // Delete records, bean's non-empty fields are conditions, Delete with ID primary key.
 func (this *DbBaseDao) Delete(bean interface{}) (int64, error) {
 	if this.Session == nil {
-		return this.Engine.Id(this.Engine.IdOf(bean)).Delete(bean)
+		return this.Engine.ID(bean).Delete(bean)
 	} else {
-		return this.Session.Id(this.Engine.IdOf(bean)).Delete(bean)
+		return this.Engine.ID(bean).Delete(bean)
 	}
 }
+
 // Exec raw sql
 func (this *DbBaseDao) Exec(sqlOrArgs ...interface{}) (sql.Result, error) {
 	session := this.Engine.NewSession()

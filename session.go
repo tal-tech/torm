@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/go-xorm/xorm"
+	"xorm.io/xorm"
 )
 
 type Session struct {
@@ -25,27 +25,20 @@ func (session *Session) PingContext(ctx context.Context) error {
 
 // Exec raw sql
 func (session *Session) Exec(sqlOrArgs ...interface{}) (sql.Result, error) {
-	return HookExec(func() (sql.Result, error) {
-		return session.Session.Exec(sqlOrArgs...)
-	})
+	return session.Session.Exec(sqlOrArgs...)
 }
 
 // Get retrieve one record from database, bean's non-empty fields
 // will be as conditions
 func (session *Session) Get(bean interface{}) (bool, error) {
-	return HookGet(func() (bool, error) {
-		return session.Session.Get(bean)
-	})
+	return session.Session.Get(bean)
 }
 
 // Find retrieve records from table, condiBeans's non-empty fields
 // are conditions. beans could be []Struct, []*Struct, map[int64]Struct
 // map[int64]*Struct
 func (session *Session) Find(rowsSlicePtr interface{}, condiBean ...interface{}) error {
-
-	return HookFind(func() error {
-		return session.Session.Find(rowsSlicePtr, condiBean...)
-	})
+	return session.Session.Find(rowsSlicePtr, condiBean...)
 }
 
 // FindAndCount find the results and also return the counts
@@ -60,16 +53,12 @@ func (session *Session) LastSQL() (string, []interface{}) {
 
 // Insert insert one or more beans
 func (session *Session) Insert(beans ...interface{}) (int64, error) {
-	return HookInsert(func() (int64, error) {
-		return session.Session.Insert(beans...)
-	})
+	return session.Session.Insert(beans...)
 }
 
 // Delete records, bean's non-empty fields are conditions
 func (session *Session) Delete(bean interface{}) (int64, error) {
-	return HookDelete(func() (int64, error) {
-		return session.Session.Delete(bean)
-	})
+	return session.Session.Delete(bean)
 }
 
 // InsertMulti insert multiple records
@@ -86,9 +75,7 @@ func (session *Session) InsertOne(bean interface{}) (int64, error) {
 
 // Query runs a raw sql and return records as []map[string][]byte
 func (session *Session) Query(sqlOrArgs ...interface{}) ([]map[string][]byte, error) {
-	return HookQuery(func() ([]map[string][]byte, error) {
-		return session.Session.Query(sqlOrArgs...)
-	})
+	return session.Session.Query(sqlOrArgs...)
 }
 
 // QueryString runs a raw sql and return records as []map[string]string
@@ -113,9 +100,7 @@ func (session *Session) QueryInterface(sqlOrArgs ...interface{}) ([]map[string]i
 //         You should call UseBool if you have bool to use.
 //        2.float32 & float64 may be not inexact as conditions
 func (session *Session) Update(bean interface{}, condiBean ...interface{}) (int64, error) {
-	return HookUpdate(func() (int64, error) {
-		return session.Session.Update(bean, condiBean...)
-	})
+	return session.Session.Update(bean, condiBean...)
 }
 
 // Unscoped always disable struct tag "deleted"
@@ -316,15 +301,6 @@ func (session *Session) Nullable(columns ...string) *Session {
 // the current time on the current session temporarily
 func (session *Session) NoAutoTime() *Session {
 	session.Session = session.Session.NoAutoTime()
-	return session
-}
-
-// Sql provides raw sql input parameter. When you have a complex SQL statement
-// and cannot use Where, Id, In and etc. Methods to describe, you can use SQL.
-//
-// Deprecated: use SQL instead.
-func (session *Session) Sql(query string, args ...interface{}) *Session {
-	session.Session = session.Session.Sql(query, args...)
 	return session
 }
 
