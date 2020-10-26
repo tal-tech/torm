@@ -12,6 +12,7 @@ package torm
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 )
@@ -19,7 +20,7 @@ import (
 type GolangStats struct {
 	Id         int       `xorm:"not null pk autoincr INT(11)"`
 	Metric     string    `xorm:"not null default '' comment('指标名') VARCHAR(100)"`
-	Endpoint   string    `xorm:"not null default '' comment('机器名') VARCHAR(100)"`
+	EndPoint   string    `xorm:"not null default '' comment('机器名') VARCHAR(100)"`
 	Tags       string    `xorm:"not null default '' comment('服务名') VARCHAR(100)"`
 	Ctime      int       `xorm:"not null default 0 comment('时间戳') index INT(11)"`
 	Value      int       `xorm:"not null default 0 comment('值') INT(11)"`
@@ -33,7 +34,7 @@ type GolangStatsDao struct {
 
 func NewGolangStatsDao(v ...interface{}) *GolangStatsDao {
 	this := new(GolangStatsDao)
-	if ins := GetDbInstance("default", "writer"); ins != nil {
+	if ins := GetDbInstance("test", "writer"); ins != nil {
 		this.UpdateEngine(ins.Engine)
 	} else {
 		return nil
@@ -64,12 +65,12 @@ func (this *GolangStatsDao) GetLimit(mId Param, pn, rn int) (ret []GolangStats, 
 }
 
 func TestSession(t *testing.T) {
-	session := GetDbInstance("default", "writer").GetSession()
+	session := GetDbInstance("test", "writer").GetSession()
 
 	//insert
 	gs := &GolangStats{
 		Metric:     "dbdao",
-		Endpoint:   "wuguofu-test",
+		EndPoint:   "wuguofu-test",
 		Tags:       "dbdao-test",
 		Ctime:      55555,
 		Value:      1,
@@ -78,6 +79,7 @@ func TestSession(t *testing.T) {
 	}
 	cnt, err := session.Insert(gs)
 	if err != nil {
+		fmt.Println(err)
 		t.Fatal("insert failed")
 	}
 	t.Log("insert success :", cnt)
@@ -94,14 +96,14 @@ func TestSession(t *testing.T) {
 	gs.Id = 52
 	gs.Value = 52
 	gs.Tags = "dbdao-update"
-	cnt, err = session.Id(52).Update(gs)
+	cnt, err = session.Id(3).Update(gs)
 	if err != nil {
 		t.Fatal("update failed,", err)
 	}
 	t.Log("update success:", cnt)
 
 	//delete
-	cnt, err = session.ID(53).Delete(GolangStats{})
+	cnt, err = session.ID(4).Delete(GolangStats{})
 	if err != nil {
 		t.Fatal("delete failed,", err)
 	}
@@ -109,12 +111,12 @@ func TestSession(t *testing.T) {
 }
 
 func TestEngine(t *testing.T) {
-	engine := GetDbInstance("default", "writer").Engine
+	engine := GetDbInstance("test", "writer").Engine
 
 	//insert
 	gs := &GolangStats{
 		Metric:     "dbdao",
-		Endpoint:   "wuguofu-test-engine",
+		EndPoint:   "wuguofu-test-engine",
 		Tags:       "dbdao-test-engine",
 		Ctime:      666666,
 		Value:      1,
@@ -139,14 +141,14 @@ func TestEngine(t *testing.T) {
 	gs.Id = 64
 	gs.Value = 64
 	gs.Tags = "dbdao-update-64"
-	cnt, err = engine.ID(64).Update(gs)
+	cnt, err = engine.ID(5).Update(gs)
 	if err != nil {
 		t.Fatal("update failed,", err)
 	}
 	t.Log("update success:", cnt)
 
 	//delete
-	cnt, err = engine.ID(63).Delete(GolangStats{})
+	cnt, err = engine.ID(3).Delete(GolangStats{})
 	if err != nil {
 		t.Fatal("delete failed,", err)
 	}
@@ -159,7 +161,7 @@ func TestDbdao(t *testing.T) {
 	//insert
 	gs := &GolangStats{
 		Metric:     "dbdao",
-		Endpoint:   "wuguofu-test-dbdao",
+		EndPoint:   "wuguofu-test-dbdao",
 		Tags:       "dbdao-test-dbdao",
 		Ctime:      88888888,
 		Value:      1,
@@ -173,7 +175,7 @@ func TestDbdao(t *testing.T) {
 	t.Log("insert success :", cnt)
 
 	//select
-	mId := CastToParamIn([]int{51, 64, 58})
+	mId := CastToParamIn([]int{5, 6, 7})
 	gss, err := dao.GetLimit(mId, 0, 5)
 	if err != nil {
 		t.Fatal("get failed")
@@ -181,9 +183,9 @@ func TestDbdao(t *testing.T) {
 	t.Log("select success:", len(gss))
 
 	//update
-	gs.Id = 60
-	gs.Value = 60
-	gs.Tags = "dbdao-update-60"
+	gs.Id = 6
+	gs.Value = 6
+	gs.Tags = "dbdao-update-6"
 	cnt, err = dao.Update(gs)
 	if err != nil {
 		t.Fatal("update failed,", err)
@@ -191,7 +193,7 @@ func TestDbdao(t *testing.T) {
 	t.Log("update success:", cnt)
 
 	//delete
-	item := &GolangStats{Id: 61}
+	item := &GolangStats{Id: 7}
 	cnt, err = dao.Delete(item)
 	if err != nil {
 		t.Fatal("delete failed,", err)
@@ -210,7 +212,7 @@ func TestAddMysqlWithoutConf(t *testing.T) {
 	//insert
 	gs := &GolangStats{
 		Metric:     "dbdao",
-		Endpoint:   "wuguofu-test-dbdao",
+		EndPoint:   "wuguofu-test-dbdao",
 		Tags:       "dbdao-test-dbdao",
 		Ctime:      88888888,
 		Value:      1,

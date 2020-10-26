@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"xorm.io/xorm"
+	"xorm.io/xorm/contexts"
 )
 
 type Engine struct {
@@ -303,4 +304,8 @@ func (engine *Engine) Having(conditions string) *Session {
 	session := engine.NewSession()
 	session = session.Having(conditions)
 	return session
+}
+
+func (engine *Engine) AddHook(hook contexts.Hook) {
+	engine.Engine.AddHook(hook)
 }

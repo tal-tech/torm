@@ -30,7 +30,6 @@ func NewTormLoggerAdapter(logger TormLogger) log.ContextLogger {
 // BeforeSQL implements ContextTormLogger
 func (l *TormLoggerAdapter) BeforeSQL(ctx log.LogContext) {
 	l.logger.ctx = ctx.Ctx
-	TormBefore()
 }
 
 // AfterSQL implements ContextTormLogger
@@ -45,7 +44,6 @@ func (l *TormLoggerAdapter) AfterSQL(ctx log.LogContext) {
 	} else {
 		l.logger.Infof("[SQL]%s %s %v", sessionPart, ctx.SQL, ctx.Args)
 	}
-	TormAfter()
 }
 
 // Debugf implements ContextTormLogger

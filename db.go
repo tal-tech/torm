@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/tal-tech/xtools/confutil"
 	"xorm.io/xorm"
+	"xorm.io/xorm/contexts"
 	xlog "xorm.io/xorm/log"
 )
 
@@ -105,11 +106,21 @@ func init() {
 		db_instance[instance] = dbs
 		curDbPoses[instance] = new(uint64)
 	}
+	AddHook(new(TormHook))
 }
 
 type MysqlOption struct {
 	Cluster string
 	Hosts   []string
+}
+
+//add hook for every engine and statement
+func AddHook(hook contexts.Hook) {
+	for _, ins := range db_instance {
+		for _, in := range ins {
+			in.Engine.Engine.AddHook(hook)
+		}
+	}
 }
 
 //add mysql without config file.
