@@ -18,22 +18,24 @@ import (
 )
 
 type GolangStats struct {
-	Id         int       `xorm:"not null pk autoincr INT(11)"`
-	Metric     string    `xorm:"not null default '' comment('指标名') VARCHAR(100)"`
-	EndPoint   string    `xorm:"not null default '' comment('机器名') VARCHAR(100)"`
-	Tags       string    `xorm:"not null default '' comment('服务名') VARCHAR(100)"`
-	Ctime      int       `xorm:"not null default 0 comment('时间戳') index INT(11)"`
-	Value      int       `xorm:"not null default 0 comment('值') INT(11)"`
-	Ctype      int       `xorm:"not null default 1 comment('统计类型,1:计数 2:耗时') index TINYINT(2)"`
-	CreateTime time.Time `xorm:"not null default '0001-01-01 00:00:00' comment('提交时间') DATETIME"`
+	Id         int       `json:"id" xorm:"not null pk autoincr INT(11)"`
+	Metric     string    `json:"metric" xorm:"not null default '' comment('指标名') VARCHAR(100)"`
+	EndPoint   string    `json:"end_point" xorm:"not null default '' comment('机器名') VARCHAR(100)"`
+	Tags       string    `json:"tags" xorm:"not null default '' comment('服务名') VARCHAR(100)"`
+	Ctime      int       `json:"ctime" xorm:"not null default 0 comment('时间戳') INT(11)"`
+	Value      int       `json:"value" xorm:"not null default 0 comment('值') INT(11)"`
+	Ctype      int       `json:"ctype" xorm:"not null default 1 comment('统计类型,1:计数 2:耗时') INT(11)"`
+	CreateTime time.Time `json:"create_time" xorm:"not null default '0001-01-01 00:00:00' comment('提交时间') DATETIME"`
 }
 
 type GolangStatsDao struct {
 	DbBaseDao
+	ctx context.Context
 }
 
-func NewGolangStatsDao(v ...interface{}) *GolangStatsDao {
+func NewGolangStatsDao(ctx context.Context, v ...interface{}) *GolangStatsDao {
 	this := new(GolangStatsDao)
+	this.ctx = ctx
 	if ins := GetDbInstance("test", "writer"); ins != nil {
 		this.UpdateEngine(ins.Engine)
 	} else {
@@ -47,7 +49,7 @@ func NewGolangStatsDao(v ...interface{}) *GolangStatsDao {
 
 func (this *GolangStatsDao) Get(mId Param) (ret []GolangStats, err error) {
 	ret = make([]GolangStats, 0)
-	this.InitSession(context.Background())
+	this.InitSession(this.ctx)
 
 	this.BuildQuery(mId, "id")
 
@@ -56,11 +58,19 @@ func (this *GolangStatsDao) Get(mId Param) (ret []GolangStats, err error) {
 }
 func (this *GolangStatsDao) GetLimit(mId Param, pn, rn int) (ret []GolangStats, err error) {
 	ret = make([]GolangStats, 0)
-	this.InitSession(context.Background())
+	this.InitSession(this.ctx)
 
 	this.BuildQuery(mId, "id")
 
 	err = this.Session.Limit(rn, pn).Find(&ret)
+	return
+}
+func (this *GolangStatsDao) GetCount(mId Param) (ret int64, err error) {
+	this.InitSession(this.ctx)
+
+	this.BuildQuery(mId, "id")
+
+	ret, err = this.Session.Count(new(GolangStats))
 	return
 }
 
@@ -156,7 +166,7 @@ func TestEngine(t *testing.T) {
 }
 
 func TestDbdao(t *testing.T) {
-	dao := NewGolangStatsDao()
+	dao := NewGolangStatsDao(context.Background())
 
 	//insert
 	gs := &GolangStats{
@@ -208,7 +218,7 @@ func TestAddMysqlWithoutConf(t *testing.T) {
 	writerOption.Hosts = append(writerOption.Hosts, "root:123456@tcp(127.0.0.1:3306)/test")
 	options = append(options, writerOption)
 	AddMysql(options)
-	dao := NewGolangStatsDao()
+	dao := NewGolangStatsDao(context.Background())
 	//insert
 	gs := &GolangStats{
 		Metric:     "dbdao",
